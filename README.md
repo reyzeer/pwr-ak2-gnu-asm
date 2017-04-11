@@ -29,19 +29,29 @@ TODO
 
 ### Składnia
 
-####
+`mov`, `add`, `xor` - mnemonik
+`_start:` - etykieta
+
+### Rozkazy
 
 #### System call - x64
+
+**Rejestry w 64 bitowym CPU:**
+
+
 
 Stałe:
 - Wejście: `STDIN = 0`
 - Wyjście: `STDOUT = 1`
 
+Przerwanie:
+- Dla 64 bit przerwanie wywołuje się poleceniem `syscall`
+
 Source: [System call - x64](http://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/)
 
-| %rax | System call |  %rdi           | %rsi       | %rdx         |
-|------|-------------|-----------------|------------|--------------|
-| 0    |  sys_read   | unsigned int fd |	char *buf |	size_t count |
+| %rax | System call |  %rdi           | %rsi       | %rdx         | | Opis |
+|------|-------------|-----------------|------------|--------------|-|------|
+| 0    |  sys_read   | unsigned int fd |	char *buf |	size_t count | | Odczyt danych z wejscia do bufora.|
 
 #### Przykład użycia
 
@@ -62,12 +72,7 @@ mov $SYS_READ, %rax
 mov $STDIN, %rdi
 mov $BUFFOR, $rsi
 mov $BUFFOR_SIZE, $rdx
-
-movl $READ, %eax
-movl $STDIN, %ebx
-movl $BUFFOR_TEXT, %ecx
-movl $BUFFOR_TEXT_SIZE, %edx
-int $SYSCALL32
+syscall
 
 ```
 
@@ -83,5 +88,44 @@ int $SYSCALL32
 	syscall
 .endm
 ```
+#### Makefile
 
-### Rozkazy
+Przykładowy plik:
+
+```makefile
+PROG=hello
+hello: $(PROG).o
+	ld -o $(PROG) $(PROG).o
+
+hello.o: hello.s
+	as -g -o $(PROG).o $(PROG).s
+
+clean:
+	rm -f $(PROG).o $(PROG)
+
+run: hello
+	./$(PROG)
+
+```
+
+Zmienna: `PROG=hello` - przypisz *PROG* ciąg *hello*
+Blok:
+```makefile
+hello: $(PROG).o
+	ld -o $(PROG) $(PROG).o
+```
+czyli
+```makefile
+polecenie: na obiekcie (wyniku innego polecenia)
+	komendy
+```
+
+Makfile jeśli podczas wywołania nie podamy żadnego polecenia wywołuje pierwsze z kodu.
+
+#### GDB
+
+Narzędzie do debugowania programu gdb.
+Aby działało poprawnie wymaga kompilacji wraz z flagą `-g` zarówno w `as` jak i w `gcc`.
+
+**Polecenia:**
+* b[reak] [etykieta]
