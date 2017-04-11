@@ -29,8 +29,19 @@ TODO
 
 ### Składnia
 
+Source: [GAS_Sytnax](https://en.wikibooks.org/wiki/X86_Assembly/GAS_Syntax)
+
 `mov`, `add`, `xor` - mnemonik
 `_start:` - etykieta
+
+Wielkość danych na których wykonywany jest rozkaz:
+
+* b = byte (8 bit)
+* s = short (16 bit integer) or single (32-bit floating point)
+* w = word (16 bit)
+* l = long (32 bit integer or 64-bit floating point)
+* q = quad (64 bit)
+* t = ten bytes (80-bit floating point)
 
 ### Rozkazy
 
@@ -38,7 +49,7 @@ TODO
 
 **Rejestry w 64 bitowym CPU:**
 
-
+![Rejestry](registers.png)
 
 Stałe:
 - Wejście: `STDIN = 0`
@@ -128,4 +139,6 @@ Narzędzie do debugowania programu gdb.
 Aby działało poprawnie wymaga kompilacji wraz z flagą `-g` zarówno w `as` jak i w `gcc`.
 
 **Polecenia:**
-* b[reak] [etykieta]
+* b[reak] [etykieta] - ustawia breakpointa
+* display $rax - wyświetla zawartość rejestru
+* info registers - wyświetla informacje o wszystkich rejestrach
