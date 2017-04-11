@@ -99,6 +99,11 @@ syscall
 	syscall
 .endm
 ```
+
+#### Funkcje
+
+TODO - grubsza sprawa, ale prosta jednoczesnie XD
+
 #### Makefile
 
 Przykładowy plik:
@@ -141,4 +146,17 @@ Aby działało poprawnie wymaga kompilacji wraz z flagą `-g` zarówno w `as` ja
 **Polecenia:**
 * b[reak] [etykieta] - ustawia breakpointa
 * display $rax - wyświetla zawartość rejestru
+  * display/b $rax - wyświetla długości bajta
+  * display/h $rax - wyświetla długości 2 bajty
+  * display/w $rax - wyświetla długości 4 bajty (słowo)
+  * display/g $rax - wyświetla długości 8 bajtów
+  * display/d $rax - wyświetla jako całkowita
+  * display/u $rax - wyświetla jako całkowita bez znaku
+  * display/o $rax - wyświetla jako octal
+  * display/t $rax - wyświetla jako bity
+  * display/c $rax - wyświetla jako litere
+  * jest więcej [tutaj](http://ftp.gnu.org/old-gnu/Manuals/gdb/html_chapter/gdb_9.html)
 * info registers - wyświetla informacje o wszystkich rejestrach
+* stepi - wywołuje następny rozkaz / przechodzi do kolejenej linii
+* next - biegnie do nastepnej etykity
+* run - uruchamia program
