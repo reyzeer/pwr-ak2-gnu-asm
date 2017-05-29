@@ -4,7 +4,7 @@ STDOUT = 1          # Wyjscia konsoli (plik)
 SYS_READ = 0        # fn - wczytywanie danych z pliku (np. z wejscia konsoli)
 SYS_WRITE = 1	    # fn - zapisanie danych do pliku (np. do pliku wyjscia konsoli)
 
-BUFFOR_SIZE = 1024   # Dlugosc bufora danych
+BUFFOR_SIZE = 2048   # Dlugosc bufora danych
 
 MASK_LETTER = 0x1f # maska litera
 MASK_DIGIT = 0x10  # maska cyfra
@@ -12,9 +12,10 @@ MASK_DIGIT = 0x10  # maska cyfra
 .data
 BUFFOR: .space BUFFOR_SIZE
 BUFFOR_TEMP: .space BUFFOR_SIZE # buffor tymczasowy do przechowywania drugiej liczby fibonnaciego
+BUFFOR_TEMP2: .space BUFFOR_SIZE # buffor tymczasowy do przechowywania drugiej liczby fibonnaciego
 
 .text
-.global _start
+.global main
 
 # --- Makra ---
 
@@ -98,14 +99,14 @@ addBuffors_getArgs:
 
 	xor %rcx, %rcx # zerowanie licznika
 
-	xor %dl, %dl # przechoywanie carry bit
+	xor %dl, %dl # przechowywanie carry bit
 
 	# Dodanie najnizszych bajtow (Half-Adder)
-	movb (%rcx, %r9, 1), %al # pobranie najnizszego bajta z drugiego buffora
-	addb %al, (%rcx, %r8, 1)
+	#movb (%rcx, %r9, 1), %al # pobranie najnizszego bajta z drugiego buffora
+	#adcb %al, (%rcx, %r8, 1)
 
 	# dodano juz pierwszy element
-	inc %rcx
+	#inc %rcx
 
 addBuffors_start:
 
@@ -199,38 +200,102 @@ fibonacci_getArgs:
 	mov 24(%rbp), %r9 # adres do bufora w ktorym zapisze liczbe fibonnaciego
 	mov 16(%rbp), %r10 # ilosc bajtow w buforze
 
+	# Jesli liczba o indeksie mniejszym niz 3 to wartosc liczby fibonnaciego jest 1
+	cmp $3, %r8
+	jb fibonacci_1
+
 	# Zakladam ze buffor z %r8 jest wyzerowany
 	# Wstawienie wartosci 1 do %BUFFOR_TEMP
 	mov $BUFFOR_TEMP, %rax
 	movb $1, (%rax)
 
+	# Wstawienie wartosci 1 do %BUFFOR_TEMP
+	mov $BUFFOR_TEMP2, %rax
+	movb $1, (%rax)
+
 fibonacci_start:
 
-	cmp $0, %rbx
+	cmp $0, %r8
 	je fibonacci_end
 	
-	# Dodanie BUFFOR_TEMP do BUFFOR	
-	push $BUFFOR
-	push $BUFFOR_TEMP
-	push $BUFFOR_SIZE
-	call addBuffors
-
-	# Kopiowanie obliczonej nowej wartosci indeksu z BUFFOR do BUFFOR_TEMP
-	push $BUFFOR_TEMP
+	# temp := f2
+	push $BUFFOR_TEMP2
 	push $BUFFOR
 	push $BUFFOR_SIZE
 	call cloneBuffor
 
-	dec %rbx
+	# add f2 := f1 + f2
+	push $BUFFOR
+	push $BUFFOR_TEMP
+	push $BUFFOR_SIZE
+	call addBuffors
+	
+	# f1 := temp
+	push $BUFFOR_TEMP
+	push $BUFFOR_TEMP2
+	push $BUFFOR_SIZE
+	call cloneBuffor
+
+	# Dodanie BUFFOR_TEMP do BUFFOR	
+	#push $BUFFOR
+	#push $BUFFOR_TEMP
+	#push $BUFFOR_SIZE
+	#call addBuffors
+	#cnwrite $BUFFOR, $BUFFOR_SIZE
+	#jmp program_end
+
+	# Kopiowanie obliczonej nowej wartosci indeksu z BUFFOR do BUFFOR_TEMP
+	#push $BUFFOR_TEMP
+	#push $BUFFOR
+	#push $BUFFOR_SIZE
+	#call cloneBuffor
+
+	dec %r8
 	
 	jmp fibonacci_start
+
+fibonacci_1:
+
+	movb $1, (%r8)
 
 fibonacci_end:
 
 	end
 ret
 
-_start:
+main:
+
+	# Wywolanie liczenia fibonacciego
+	push $20000
+	push $BUFFOR
+	push $BUFFOR_SIZE
+	call fibonacci
+	cnwrite $BUFFOR, $BUFFOR_SIZE
+
+	jmp program_end
+
+	xor %rcx, %rcx
+	mov $BUFFOR, %rax
+	movb $0xe9, (%rcx, %rax, 1)
+	inc %rcx
+	movb $0x00, (%rcx, %rax, 1)
+	inc %rcx
+	movb $0x00, (%rcx, %rax, 1)
+
+	xor %rcx, %rcx
+	mov $BUFFOR_TEMP, %rax
+	movb $0x90, (%rcx, %rax, 1)
+	inc %rcx
+	movb $0x00, (%rcx, %rax, 1)
+	inc %rcx
+	movb $0x00, (%rcx, %rax, 1)
+
+	push $BUFFOR
+	push $BUFFOR_TEMP
+	push $BUFFOR_SIZE
+	call addBuffors
+	#call cloneBuffor
+	cnwrite $BUFFOR, $BUFFOR_SIZE
 
 	#mov $BUFFOR, %rax
 	#mov $BUFFOR_TEMP, %rbx	
@@ -257,13 +322,13 @@ _start:
 	#je program_end
 
 	# Wywolanie liczenia fibonacciego
-	push $10
-	push $BUFFOR
-	push $BUFFOR_SIZE
-	call fibonacci
+	#push $10
+	#push $BUFFOR
+	#push $BUFFOR_SIZE
+	#call fibonacci
 
 	# Zapisanie obliczonej liczby do pliku wyjscia konsoli
-	cnwrite $BUFFOR, $BUFFOR_SIZE
+	#cnwrite $BUFFOR, $BUFFOR_SIZE
 
 program_end:
 	sysexit
