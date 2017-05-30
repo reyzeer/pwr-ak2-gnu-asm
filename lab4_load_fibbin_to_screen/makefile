@@ -1,4 +1,4 @@
-PROG=fib_screen
+PROG=fib
 
 $(PROG): $(PROG).o
 	gcc -g -m64 -c $(PROG).s
@@ -8,8 +8,11 @@ $(PROG).o: $(PROG).s
 	as -g -o $(PROG).o $(PROG).s
 
 clean:
-	rm -f $(PROG).o $(PROG)
+	rm -f $(PROG).o $(PROG) $(PROG).bin
 
 run: $(PROG)
-	./$(PROG)
+	./$(PROG) >> $(PROG).bin
+
+result:
+	hexdump $(PROG).bin
 
