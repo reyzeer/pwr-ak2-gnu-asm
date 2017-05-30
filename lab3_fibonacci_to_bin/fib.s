@@ -101,13 +101,6 @@ addBuffors_getArgs:
 
 	xor %dl, %dl # przechowywanie carry bit
 
-	# Dodanie najnizszych bajtow (Half-Adder)
-	#movb (%rcx, %r9, 1), %al # pobranie najnizszego bajta z drugiego buffora
-	#adcb %al, (%rcx, %r8, 1)
-
-	# dodano juz pierwszy element
-	#inc %rcx
-
 addBuffors_start:
 
 	cmp %rcx, %r10
@@ -236,20 +229,6 @@ fibonacci_start:
 	push $BUFFOR_SIZE
 	call cloneBuffor
 
-	# Dodanie BUFFOR_TEMP do BUFFOR	
-	#push $BUFFOR
-	#push $BUFFOR_TEMP
-	#push $BUFFOR_SIZE
-	#call addBuffors
-	#cnwrite $BUFFOR, $BUFFOR_SIZE
-	#jmp program_end
-
-	# Kopiowanie obliczonej nowej wartosci indeksu z BUFFOR do BUFFOR_TEMP
-	#push $BUFFOR_TEMP
-	#push $BUFFOR
-	#push $BUFFOR_SIZE
-	#call cloneBuffor
-
 	dec %r8
 	
 	jmp fibonacci_start
@@ -271,64 +250,6 @@ main:
 	push $BUFFOR_SIZE
 	call fibonacci
 	cnwrite $BUFFOR, $BUFFOR_SIZE
-
-	jmp program_end
-
-	xor %rcx, %rcx
-	mov $BUFFOR, %rax
-	movb $0xe9, (%rcx, %rax, 1)
-	inc %rcx
-	movb $0x00, (%rcx, %rax, 1)
-	inc %rcx
-	movb $0x00, (%rcx, %rax, 1)
-
-	xor %rcx, %rcx
-	mov $BUFFOR_TEMP, %rax
-	movb $0x90, (%rcx, %rax, 1)
-	inc %rcx
-	movb $0x00, (%rcx, %rax, 1)
-	inc %rcx
-	movb $0x00, (%rcx, %rax, 1)
-
-	push $BUFFOR
-	push $BUFFOR_TEMP
-	push $BUFFOR_SIZE
-	call addBuffors
-	#call cloneBuffor
-	cnwrite $BUFFOR, $BUFFOR_SIZE
-
-	#mov $BUFFOR, %rax
-	#mov $BUFFOR_TEMP, %rbx	
-
-	#xor %rcx, %rcx
-
-	#movb $0xFF, (%rcx, %rax, 1)	
-	#movb $0x1, (%rcx, %rbx, 1)
-
-	#inc %rcx
-
-        #movb $0xFF, (%rcx, %rax, 1)
-        #movb $0x1, (%rcx, %rbx, 1)
-
-	#push $BUFFOR
-	#push $BUFFOR_TEMP
-	#push $BUFFOR_SIZE
-	#call cloneBuffor
-	#call addBuffors
-
-	#cnwrite $BUFFOR, $BUFFOR_SIZE	
-
-	# die
-	#je program_end
-
-	# Wywolanie liczenia fibonacciego
-	#push $10
-	#push $BUFFOR
-	#push $BUFFOR_SIZE
-	#call fibonacci
-
-	# Zapisanie obliczonej liczby do pliku wyjscia konsoli
-	#cnwrite $BUFFOR, $BUFFOR_SIZE
 
 program_end:
 	sysexit
