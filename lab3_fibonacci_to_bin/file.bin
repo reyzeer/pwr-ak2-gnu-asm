@@ -1,4 +1,0 @@
-./fib_screen
-makefile:14: recipe for target 'run' failed
-as -g -o fib_screen.o fib_screen.s
-makefile:8: recipe for target 'fib_screen.o' failed
