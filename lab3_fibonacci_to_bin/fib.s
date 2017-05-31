@@ -216,18 +216,27 @@ fibonacci_start:
 	push $BUFFOR
 	push $BUFFOR_SIZE
 	call cloneBuffor
+	pop %r15 # segmentation - fault protect
+	pop %r15 # segmentation - fault protect
+	pop %r15 # segmentation - fault protec	
 
 	# add f2 := f1 + f2
 	push $BUFFOR
 	push $BUFFOR_TEMP
 	push $BUFFOR_SIZE
 	call addBuffors
+	pop %r15 # segmentation - fault protec
+	pop %r15 # segmentation - fault protec
+	pop %r15 # segmentation - fault protec
 	
 	# f1 := temp
 	push $BUFFOR_TEMP
 	push $BUFFOR_TEMP2
 	push $BUFFOR_SIZE
 	call cloneBuffor
+	pop %r15 # segmentation - fault protec
+	pop %r15 # segmentation - fault protec
+	pop %r15 # segmentation - fault protec
 
 	dec %r8
 	
@@ -249,7 +258,11 @@ main:
 	push $BUFFOR
 	push $BUFFOR_SIZE
 	call fibonacci
+	pop %r15 # segmentation - fault protec
+	pop %r15 # segmentation - fault protec
+	pop %r15 # segmentation - fault protec
+
 	cnwrite $BUFFOR, $BUFFOR_SIZE
 
 program_end:
-	sysexit
+	
