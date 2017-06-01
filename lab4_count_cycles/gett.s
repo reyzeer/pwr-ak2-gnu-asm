@@ -33,5 +33,8 @@ getT_to64:
 
 	shl $32, %rdx   # gorne bity
         add %rdx, %rax  # dodwanie do rax
+	
+	# w 64-bitach zwracamy rax'em
+
 ret
 
