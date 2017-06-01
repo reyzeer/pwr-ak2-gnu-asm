@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-extern unsigned long int getT();
+extern unsigned long int getT(unsigned long int);
 
 void main ()
 {
