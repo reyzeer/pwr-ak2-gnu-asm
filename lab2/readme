@@ -1,0 +1,12 @@
+# Opis zadania
+
+Celem programu bylo wczytanie znakow do rejestru `rax` z zakresu [0-9:A-F] ignorujac pozostale znaki.
+Liczby znaki mialy zostac wczytane w taki sposob, aby dodawac do `rax` tylko ich ostatnie 4 bity,
+wprowadzane zgodnie z kolejnoscia ich wpisania do buffora.
+
+# Polecenia
+
+* `make` - kompiluje program
+* `make clean` - usuwa plik skompilowanego i zlinkowanego programu oraz tymczasowy plik skompilowanego programu bez zlinkowanych bibliotek,
+* `make run` - uruchamia aplikacje
+
